@@ -1,53 +1,25 @@
-# react-proxy-loader
+# react-proxy-plus-loader
 
-Wraps a react component in a proxy component to enable Code Splitting (loads a react component and its dependencies on demand).
+Based on [react-proxy-loader](https://github.com/webpack/react-proxy-loader), adapted for `react-router` [resolve data](https://github.com/rackt/react-router/blob/master/examples/async-data/app.js).
 
-## installation
+## Installation
 
-`npm install react-proxy-loader`
+`npm install react-proxy-loader --save`
 
 ## Usage
 
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
 ``` js
-var Component = require("react-proxy!./Component");
-// => returns the proxied component (It loads on demand.)
-// (webpack creates an additional chunk for this component and its dependencies)
-
-var ComponentProxyMixin = require("react-proxy!./Component").Mixin;
-// => returns a mixin for the proxied component
-// (This allows you to setup rendering for the loading state for the proxy)
-var ComponentProxy = React.createClass({
-	mixins: [ComponentProxyMixin],
-	renderUnavailable: function() {
-		return <p>Loading...</p>;
-	}
+var A = require("./a");
+var B = require("react-proxy-plus!./b");
+var C = require("react-proxy-plus!./c");
+var D = React.createClass({
+  mixins: [require("react-proxy-plus?async!./d").Mixin],
+  renderUnavailable: function () {
+    return <p>Loading...</p>;
+  }
 });
-```
-
-The proxy is a react component. All properties are transferred to the wrapped component.
-
-### Configuration
-
-Instead of (or in addition to) inlining the loader call you can also specify the proxied components in your configuration:
-
-``` js
-module.exports = {
-	module: {
-		loaders: [
-			/* ... */
-			{
-				test: [
-					/component\.jsx$/, // select component by RegExp
-					/\.async\.jsx$/, // select component by extension
-					"/abs/path/to/component.jsx" // absolute path to component
-				],
-				loader: "react-proxy"
-			}
-		]
-	}
-};
 ```
 
 ### Chunk name
@@ -55,7 +27,80 @@ module.exports = {
 You can give the chunk a name with the `name` query parameter:
 
 ``` js
-var Component = require("react-proxy?name=chunkName!./Component");
+var Component = require("react-proxy-plus?name=chunkName!./Component");
+```
+
+### With react-router
+
+``` js
+var React = require("react");
+var Router = require('react-router');
+var RouteHandler = Router.RouteHandler;
+var DefaultRoute = Router.DefaultRoute;
+var Route = Router.Route;
+var Link = Router.Link;
+
+var A = require("./a");
+var B = require("react-proxy-plus!./b");
+var C = require("react-proxy-plus!./c");
+var D = React.createClass({
+  mixins: [require("react-proxy-plus?async!./d").Mixin],
+  renderUnavailable: function () {
+    return <p>Loading...</p>;
+  }
+});
+
+var App = React.createClass({
+  render: function () {
+    return (
+      <div>
+        <ul>
+          <li><Link to='a'>Page A</Link></li>
+          <li><Link to='b'>Page B</Link></li>
+          <li><Link to='c'>Page C</Link></li>
+          <li><Link to='d'>Page D</Link></li>
+        </ul>
+        <RouteHandler {...this.props}/>
+      </div>
+    );
+  }
+});
+
+var routes = (
+  <Route name='app' path='/' handler={App}>
+    <DefaultRoute name='a' handler={A}/>
+    <Route name='b' handler={B}/>
+    <Route name='c' handler={C}/>
+    <Route name='d' handler={D}/>
+  </Route>
+);
+
+Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+  var resolveData = {};
+  var promises = state.routes.filter(function (route) {
+    return route.handler.resolve;
+  }).map(function (route) {
+    return new Promise(function (resolve) {
+      resolve(route.handler.resolve(state.params).then(function (routeData) {
+        resolveData[route.name] = routeData;
+        return routeData;
+      }));
+    });
+  });
+
+  Promise.all(promises).then(function () {
+    React.render(<Handler resolveData={resolveData}/>, document.body);
+  });
+});
+```
+
+### Run example
+```
+git clone https://github.com/vn38minhtran/react-proxy-plus-loader.git
+cd react-proxy-plus-loader
+npm install
+cd example
+webpack-dev-server --hot --inline --colors
 ```
 
 # License
