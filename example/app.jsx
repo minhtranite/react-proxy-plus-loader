@@ -45,7 +45,9 @@ var App = React.createClass({
         <nav className="navbar navbar-default">
           <div className="container">
             <div className="navbar-header">
-              <a className="navbar-brand" href="#">Brand</a>
+              <a className="navbar-brand"
+                href="https://github.com/vn38minhtran/react-proxy-plus-loader">React
+                Proxy Plus</a>
             </div>
             <div className="collapse navbar-collapse">
               <ul className="nav navbar-nav navbar-right">
