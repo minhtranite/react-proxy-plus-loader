@@ -67,7 +67,7 @@ var App = React.createClass({
 });
 
 var routes = (
-  <Route name='app' path='/' handler={App}>
+  <Route name='app' path={window.location.pathname} handler={App}>
     <DefaultRoute name='a' handler={A}/>
     <Route name='b' handler={B}/>
     <Route name='c' handler={C}/>
