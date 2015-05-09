@@ -2,6 +2,10 @@
 
 Based on [react-proxy-loader](https://github.com/webpack/react-proxy-loader), adapted for `react-router` [resolve data](https://github.com/rackt/react-router/blob/master/examples/async-data/app.js).
 
+## Demo
+
+https://vn38minhtran.github.io/react-proxy-plus-loader
+
 ## Installation
 
 `npm install react-proxy-loader --save`
@@ -94,7 +98,7 @@ Router.run(routes, Router.HistoryLocation, function (Handler, state) {
 });
 ```
 
-### Run example
+## Run example
 ```
 git clone https://github.com/vn38minhtran/react-proxy-plus-loader.git
 cd react-proxy-plus-loader

@@ -4,6 +4,9 @@ var RouteHandler = Router.RouteHandler;
 var DefaultRoute = Router.DefaultRoute;
 var Route = Router.Route;
 var Link = Router.Link;
+var ProgressBar = require('./ProgressBar');
+var EventEmitter = require('events').EventEmitter;
+var ResolveStore = new EventEmitter();
 
 var A = require("./a");
 var B = require("react-proxy-plus!./b");
@@ -16,6 +19,24 @@ var D = React.createClass({
 });
 
 var App = React.createClass({
+  getInitialState: function () {
+    return {
+      resolvePercent: -1
+    };
+  },
+  componentWillMount: function () {
+    ResolveStore.on('begin', function () {
+      this.setState({
+        resolvePercent: 0
+      });
+    }.bind(this));
+
+    ResolveStore.on('end', function () {
+      this.setState({
+        resolvePercent: 100
+      });
+    }.bind(this));
+  },
   render: function () {
     return (
       <div>
@@ -26,6 +47,7 @@ var App = React.createClass({
           <li><Link to='d'>Page D</Link></li>
         </ul>
         <RouteHandler {...this.props}/>
+        <ProgressBar percent={this.state.resolvePercent} increment={true}/>
       </div>
     );
   }
@@ -41,6 +63,7 @@ var routes = (
 );
 
 Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+  ResolveStore.emit('begin');
   var resolveData = {};
   var promises = state.routes.filter(function (route) {
     return route.handler.resolve;
@@ -54,6 +77,7 @@ Router.run(routes, Router.HistoryLocation, function (Handler, state) {
   });
 
   Promise.all(promises).then(function () {
+    ResolveStore.emit('end');
     React.render(<Handler resolveData={resolveData}/>, document.body);
   });
 });
