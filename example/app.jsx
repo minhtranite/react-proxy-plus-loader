@@ -8,6 +8,8 @@ var ProgressBar = require('./ProgressBar');
 var EventEmitter = require('events').EventEmitter;
 var ResolveStore = new EventEmitter();
 
+require('./bootstrap.css');
+
 var A = require("./a");
 var B = require("react-proxy-plus!./b");
 var C = require("react-proxy-plus!./c");
@@ -40,13 +42,24 @@ var App = React.createClass({
   render: function () {
     return (
       <div>
-        <ul>
-          <li><Link to='a'>Page A</Link></li>
-          <li><Link to='b'>Page B</Link></li>
-          <li><Link to='c'>Page C</Link></li>
-          <li><Link to='d'>Page D</Link></li>
-        </ul>
-        <RouteHandler {...this.props}/>
+        <nav className="navbar navbar-default">
+          <div className="container">
+            <div className="navbar-header">
+              <a className="navbar-brand" href="#">Brand</a>
+            </div>
+            <div className="collapse navbar-collapse">
+              <ul className="nav navbar-nav navbar-right">
+                <li><Link to='a'>Page A</Link></li>
+                <li><Link to='b'>Page B</Link></li>
+                <li><Link to='c'>Page C</Link></li>
+                <li><Link to='d'>Page D</Link></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div className="container">
+          <RouteHandler {...this.props}/>
+        </div>
         <ProgressBar percent={this.state.resolvePercent} increment={true}/>
       </div>
     );
