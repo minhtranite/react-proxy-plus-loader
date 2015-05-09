@@ -1,0 +1,1 @@
+webpackJsonp([1],{72:function(e,t,n){var r=n(7),i=r.createClass({displayName:"D",render:function(){return r.createElement("div",null,r.createElement("p",null,"This is component D."),r.createElement("p",null,"Resolve Data: "),r.createElement("pre",null,JSON.stringify(this.props.resolveData)))}});e.exports=i}});
