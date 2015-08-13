@@ -9,7 +9,6 @@ module.exports.pitch = function (remainingRequest) {
 
   return [
     'var React = require("react");',
-    'var Promise = require("promise");',
     'var component;',
     'var desc = {',
     '  statics: {',

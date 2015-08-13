@@ -1,6 +1,6 @@
 {
   "name": "react-proxy-plus-loader",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Wraps a react component in a proxy component to enable Code Splitting.",
   "main": "index.js",
   "directories": {
@@ -8,9 +8,6 @@
   },
   "dependencies": {
     "loader-utils": "^0.2.7"
-  },
-  "peerDependencies": {
-    "promise": "^7.0.1"
   },
   "devDependencies": {
     "css-loader": "^0.12.0",
